@@ -6,23 +6,19 @@ package org.maoge.scholar.model;
  * @author Administrator
  *
  */
-public class Result {
+public class Result<T> {
 	private int code;
 	private String msg;
 
-	public static Result successResult() {
-		Result result = new Result();
-		result.setCode(0);
-		result.setMsg("²Ù×÷³É¹¦");
-		return result;
+	public T getData() {
+		return data;
 	}
 
-	public static Result failResult(String msg) {
-		Result result = new Result();
-		result.setCode(9999);
-		result.setMsg(msg);
-		return result;
+	public void setData(T data) {
+		this.data = data;
 	}
+
+	private T data;
 
 	public int getCode() {
 		return code;

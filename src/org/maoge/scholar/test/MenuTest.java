@@ -25,6 +25,5 @@ public class MenuTest {
 		System.out.println(menuDao.getPage(1, 10).size());
 
 		menuDao.deleteById("2");
-
 	}
 }
