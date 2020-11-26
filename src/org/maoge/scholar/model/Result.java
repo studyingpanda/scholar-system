@@ -16,6 +16,30 @@ public class Result<T> {
 	 * 返回数据
 	 */
 	private T data;
+	/**
+	 * 分页总数
+	 */
+	private int total;
+	/**
+	 * 分页数据
+	 */
+	private T rows;
+
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
+
+	public T getRows() {
+		return rows;
+	}
+
+	public void setRows(T rows) {
+		this.rows = rows;
+	}
 
 	public T getData() {
 		return data;

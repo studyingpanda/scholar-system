@@ -7,14 +7,28 @@
 <link rel="stylesheet" type="text/css"
 	href="easyui/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="css/main.css">
 <script type="text/javascript" src="easyui/jquery.min.js"></script>
 <script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+
 </head>
 
-<body>项目管理
+<body>
+	<div class="tool-box">
+		<a id="btn" href="#" class="easyui-linkbutton"
+			data-options="iconCls:'icon-add'">新增</a>
+	</div>
+	<table id="mainTable" title="项目列表" class="easyui-datagrid"
+		url="CoreServlet?method=getProjectPage" pagination="true"
+		singleSelect="true">
+		<thead>
+			<tr>
+				<th field="id">ID</th>
+			</tr>
+		</thead>
+	</table>
 </body>
 <script>
 	
 </script>
-
 </html>

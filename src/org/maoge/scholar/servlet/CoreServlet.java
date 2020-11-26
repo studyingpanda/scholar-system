@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.maoge.scholar.dao.MenuDao;
+import org.maoge.scholar.dao.ProjectDao;
 import org.maoge.scholar.dao.UserDao;
 import org.maoge.scholar.model.Result;
 import org.maoge.scholar.model.User;
@@ -46,6 +47,15 @@ public class CoreServlet extends HttpServlet {
 	public Result handleRequest(HttpServletRequest request) throws Exception {
 		Result result = new Result();
 		String method = request.getParameter("method");
+		// 请求页码、每页显示行数、偏移、总数
+		int page = 1, rows = 10, total = 0;
+		if (method.contains("Page") == true) {
+			// 获取
+			String inputPage = request.getParameter("page");
+			String inputRows = request.getParameter("rows");
+			page = (inputPage == null) ? 1 : Integer.parseInt(inputPage);
+			rows = (inputRows == null) ? 10 : Integer.parseInt(inputRows);
+		}
 		// 登录处理
 		if (method.equals("login")) {
 			String loginName = request.getParameter("loginName");
@@ -73,7 +83,13 @@ public class CoreServlet extends HttpServlet {
 			result.setCode(0);
 			result.setMsg("操作成功");
 		}
-		// 其他处理放于此处
+		// 获取项目分页
+		else if (method.equals("getProjectPage")) {
+			ProjectDao projectDao = new ProjectDao();
+			total = projectDao.getCount();
+			result.setTotal(total);
+			result.setRows(projectDao.getPage(page, rows));
+		}
 		return result;
 	}
 }
