@@ -1,6 +1,7 @@
 package org.maoge.scholar.dao;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -8,12 +9,27 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.maoge.scholar.model.Menu;
+import org.maoge.scholar.model.User;
 import org.maoge.scholar.utils.ConnectionUtils;
 
 /**
  * 菜单数据访问类
  */
 public class MenuDao {
+
+	/**
+	 * 获取用户拥有的菜单
+	 */
+	public List<Menu> getMenusOfUser(User user) throws SQLException {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select * from menu where id in (select menuId from rolemenu where role=?)";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { user.getRole() };
+		List<Menu> menus = runner.query(conn, sql, new BeanListHandler<Menu>(Menu.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		return menus;
+	}
+
 	/**
 	 * 新增
 	 */

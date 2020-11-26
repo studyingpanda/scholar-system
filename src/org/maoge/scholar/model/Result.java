@@ -1,14 +1,21 @@
 package org.maoge.scholar.model;
 
 /**
- * 结果
- * 
- * @author Administrator
- *
+ * 统一返回结果类
  */
 public class Result<T> {
+	/**
+	 * 0成功 9999失败
+	 */
 	private int code;
+	/**
+	 * 提示信息
+	 */
 	private String msg;
+	/**
+	 * 返回数据
+	 */
+	private T data;
 
 	public T getData() {
 		return data;
@@ -17,8 +24,6 @@ public class Result<T> {
 	public void setData(T data) {
 		this.data = data;
 	}
-
-	private T data;
 
 	public int getCode() {
 		return code;
@@ -35,5 +40,4 @@ public class Result<T> {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-
 }

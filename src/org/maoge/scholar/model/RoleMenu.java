@@ -5,8 +5,16 @@ package org.maoge.scholar.model;
  */
 public class RoleMenu {
 	private String id;
-	private String roleId;
+	private String role;
 	private String menuId;
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	public String getId() {
 		return id;
@@ -14,14 +22,6 @@ public class RoleMenu {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(String roleId) {
-		this.roleId = roleId;
 	}
 
 	public String getMenuId() {

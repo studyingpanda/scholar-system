@@ -20,7 +20,7 @@ public class RoleMenuDao {
 	public void insert(RoleMenu roleMenu) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
 		String sql = "insert into roleMenu(roleId,menuId)values(?,?)";
-		Object[] params = { roleMenu.getRoleId(), roleMenu.getMenuId() };
+		Object[] params = { roleMenu.getRole(), roleMenu.getMenuId() };
 		QueryRunner runner = new QueryRunner();
 		runner.update(conn, sql, params);
 		ConnectionUtils.releaseConnection(conn);
@@ -44,7 +44,7 @@ public class RoleMenuDao {
 	public void update(RoleMenu roleMenu) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
 		String sql = "update roleMenu set roleId=?,menuId=? where id =?";
-		Object[] params = { roleMenu.getRoleId(), roleMenu.getMenuId(), roleMenu.getId() };
+		Object[] params = { roleMenu.getRole(), roleMenu.getMenuId(), roleMenu.getId() };
 		QueryRunner runner = new QueryRunner();
 		runner.update(conn, sql, params);
 		ConnectionUtils.releaseConnection(conn);

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title></title>
+<title>index.html</title>
 <link rel="stylesheet" type="text/css"
 	href="easyui/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
@@ -32,15 +32,15 @@
 			style="background: #fafafa; width: 100%; height: 100%;">
 			<div class="input-box">
 				<label for="name">用户名:</label> <input class="easyui-textbox"
-					type="text" id="userName" data-options="required:true">
+					type="text" id="loginName" data-options="required:true">
 			</div>
 			<div class="input-box">
 				<label for="email">密码:</label> <input class="easyui-textbox"
 					type="text" id="password" data-options="required:true">
 			</div>
 			<div class="input-box">
-				<a id="btn" onclick="loginAction()" href="#" class="easyui-linkbutton"
-					data-options="iconCls:'icon-ok'">登录</a>
+				<a id="btn" onclick="loginAction()" href="#"
+					class="easyui-linkbutton" data-options="iconCls:'icon-ok'">登录</a>
 			</div>
 		</div>
 	</div>
@@ -50,7 +50,7 @@
 	function loginAction() {
 		console.log("loginAction");
 		var param = {
-			userName : $("#userName").val(),
+			loginName : $("#loginName").val(),
 			password : $("#password").val()
 		}
 		$.ajax({
@@ -60,6 +60,11 @@
 			data : param,
 			success : function(res) {
 				console.log(res);
+				if (res.code == 0) {//登录成功
+					window.location.href = "main.html";
+				} else {//登录失败直接提示错误信息
+					alert(res.msg);
+				}
 			},
 		});
 	}

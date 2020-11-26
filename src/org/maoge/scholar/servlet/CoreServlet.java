@@ -2,6 +2,7 @@ package org.maoge.scholar.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.maoge.scholar.dao.MenuDao;
+import org.maoge.scholar.dao.UserDao;
 import org.maoge.scholar.model.Result;
+import org.maoge.scholar.model.User;
 
 import com.alibaba.fastjson.JSON;
 
@@ -41,8 +45,35 @@ public class CoreServlet extends HttpServlet {
 	 */
 	public Result handleRequest(HttpServletRequest request) throws Exception {
 		Result result = new Result();
-		result.setCode(0);
-		result.setMsg("操作成功");
+		String method = request.getParameter("method");
+		// 登录处理
+		if (method.equals("login")) {
+			String loginName = request.getParameter("loginName");
+			String password = request.getParameter("password");
+			UserDao userDao = new UserDao();
+			List<User> users = userDao.getUsersByLoginNameAndPassword(loginName, password);
+			if (users != null && users.size() == 1) {// 登录成功
+				result.setCode(0);
+				result.setMsg("操作成功");
+				result.setData(users.get(0));
+				request.getSession().setAttribute("loginUser", users.get(0));
+			} else {// 登录失败
+				result.setCode(9999);
+				result.setMsg("操作失败");
+			}
+		}
+		// 查询登录用户拥有的菜单
+		else if (method.equals("getMenusOfUser")) {
+			User loginUser = (User) request.getSession().getAttribute("loginUser");
+			if (loginUser == null) {
+				throw new Exception("未登录！");
+			}
+			MenuDao menuDao = new MenuDao();
+			result.setData(menuDao.getMenusOfUser(loginUser));// 返回数据为对应菜单
+			result.setCode(0);
+			result.setMsg("操作成功");
+		}
+		// 其他处理放于此处
 		return result;
 	}
 }

@@ -1,6 +1,7 @@
 package org.maoge.scholar.dao;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -14,6 +15,20 @@ import org.maoge.scholar.utils.ConnectionUtils;
  * 用户数据访问类
  */
 public class UserDao {
+
+	/**
+	 * 通过登录名、密码获取用户
+	 */
+	public List<User> getUsersByLoginNameAndPassword(String loginName, String password) throws SQLException {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select * from user where loginName=? and password=?";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { loginName, password };
+		List<User> users = runner.query(conn, sql, new BeanListHandler<User>(User.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		return users;
+	}
+
 	/**
 	 * 新增
 	 */
