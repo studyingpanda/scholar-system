@@ -10,7 +10,6 @@
 <link rel="stylesheet" type="text/css" href="css/main.css">
 <script type="text/javascript" src="easyui/jquery.min.js"></script>
 <script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
-
 </head>
 
 <body>
@@ -20,10 +19,13 @@
 	</div>
 	<table id="mainTable" title="项目列表" class="easyui-datagrid"
 		url="CoreServlet?method=getProjectPage" pagination="true"
-		singleSelect="true">
+		singleSelect="true" fitColumns="true">
 		<thead>
 			<tr>
-				<th field="id">ID</th>
+				<th data-options="field:'id',width:50">序号</th>
+				<th data-options="field:'type',width:50">类型</th>
+				<th data-options="field:'name',width:50">名称</th>
+				<th data-options="field:'about',width:100">简介</th>
 			</tr>
 		</thead>
 	</table>
@@ -31,4 +33,5 @@
 <script>
 	
 </script>
+
 </html>

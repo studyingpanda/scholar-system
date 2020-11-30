@@ -47,9 +47,9 @@ public class CoreServlet extends HttpServlet {
 	public Result handleRequest(HttpServletRequest request) throws Exception {
 		Result result = new Result();
 		String method = request.getParameter("method");
-		// 请求页码、每页显示行数、偏移、总数
+		// 请求页码、每页显示行数、总数
 		int page = 1, rows = 10, total = 0;
-		if (method.contains("Page") == true) {
+		if (method.contains("Page") == true) {// 当前为分页请求
 			// 获取
 			String inputPage = request.getParameter("page");
 			String inputRows = request.getParameter("rows");
