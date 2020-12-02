@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.maoge.scholar.dao.MenuDao;
 import org.maoge.scholar.dao.ProjectDao;
 import org.maoge.scholar.dao.UserDao;
+import org.maoge.scholar.model.Project;
 import org.maoge.scholar.model.Result;
 import org.maoge.scholar.model.User;
 
@@ -89,6 +90,17 @@ public class CoreServlet extends HttpServlet {
 			total = projectDao.getCount();
 			result.setTotal(total);
 			result.setRows(projectDao.getPage(page, rows));
+		}
+		// 新增项目保存
+		else if (method.equals("addProject")) {
+			ProjectDao projectDao = new ProjectDao();
+			Project project = new Project();
+			project.setType(request.getParameter("type"));
+			project.setName(request.getParameter("name"));
+			project.setAbout(request.getParameter("about"));
+			projectDao.insert(project);
+			result.setCode(0);
+			result.setMsg("操作成功");
 		}
 		return result;
 	}

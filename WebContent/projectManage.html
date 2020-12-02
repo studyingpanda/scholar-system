@@ -2,23 +2,20 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<title></title>
-<link rel="stylesheet" type="text/css"
-	href="easyui/themes/default/easyui.css">
-<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
-<link rel="stylesheet" type="text/css" href="css/main.css">
-<script type="text/javascript" src="easyui/jquery.min.js"></script>
-<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<script type="text/javascript" src="easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
 </head>
 
 <body>
 	<div class="tool-box">
-		<a id="btn" href="#" class="easyui-linkbutton"
-			data-options="iconCls:'icon-add'">新增</a>
+		<a id="btn" onclick="btnAddClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">新增</a>
 	</div>
-	<table id="mainTable" title="项目列表" class="easyui-datagrid"
-		url="CoreServlet?method=getProjectPage" pagination="true"
+	<table id="mainTable" title="项目列表" class="easyui-datagrid" url="CoreServlet?method=getProjectPage" pagination="true"
 		singleSelect="true" fitColumns="true">
 		<thead>
 			<tr>
@@ -29,9 +26,62 @@
 			</tr>
 		</thead>
 	</table>
+	<!-- 新增弹窗 -->
+	<div id="dialog-add" class="easyui-dialog" title="新增" data-options="iconCls:'icon-ok',closed:'true'"
+		style="width: 600px; height: 400px; padding: 10px">
+		<table>
+			<tr>
+				<td>类型：</td>
+				<td>
+					<select id="add-type" class="easyui-combobox" style="width: 200px;">
+						<option value="award">奖学金</option>
+						<option value="help">助学金</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>名称：</td>
+				<td><input id="add-name" class="easyui-textbox" style="width: 200px"></td>
+			</tr>
+			<tr>
+				<td>简介：</td>
+				<td><input id="add-about" class="easyui-textbox" style="width: 200px"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><a id="btn" onclick="btnAddSubmit()" href="#" class="easyui-linkbutton">保存</a></td>
+			</tr>
+		</table>
+	</div>
 </body>
 <script>
-	
+	// 新增点击
+	function btnAddClick() {
+		$('#dialog-add').dialog('open');
+	}
+	// 新增保存
+	function btnAddSubmit() {
+		var param = {
+			type: $("#add-type").val(),
+			name: $("#add-name").val(),
+			about: $("#add-about").val(),
+		}
+		$.ajax({
+			url: "CoreServlet?method=addProject",
+			type: "post",
+			dataType: "json",
+			data: param,
+			success: function (res) {
+				console.log(res);
+				if (res.code == 0) {//成功则刷新表格
+					$('#mainTable').datagrid('reload');
+					$('#dialog-add').dialog('close');
+				} else {//提示错误信息
+					alert(res.msg);
+				}
+			},
+		});
+	}
 </script>
 
 </html>
