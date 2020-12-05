@@ -102,6 +102,18 @@ public class CoreServlet extends HttpServlet {
 			result.setCode(0);
 			result.setMsg("操作成功");
 		}
+		// 编辑项目保存
+		else if (method.equals("editProject")) {
+			ProjectDao projectDao = new ProjectDao();
+			Project project = new Project();
+			project.setId(request.getParameter("id"));
+			project.setType(request.getParameter("type"));
+			project.setName(request.getParameter("name"));
+			project.setAbout(request.getParameter("about"));
+			projectDao.update(project);
+			result.setCode(0);
+			result.setMsg("操作成功");
+		}
 		return result;
 	}
 }
