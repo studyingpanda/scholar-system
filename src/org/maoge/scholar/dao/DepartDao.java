@@ -89,11 +89,11 @@ public class DepartDao {
 	}
 
 	/**
-	 * 分页查询
+	 * 分页查询(联表)
 	 */
 	public List<Depart> getPage(int page, int rows) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
-		String sql = "select * from depart limit ?,?";
+		String sql = "select son.*,parent.name as parentName from depart son left join depart parent on son.parentId=parent.id limit ?,?";
 		QueryRunner runner = new QueryRunner();
 		Object[] params = { (page - 1) * rows, rows };
 		List<Depart> departs = runner.query(conn, sql, new BeanListHandler<Depart>(Depart.class), params);

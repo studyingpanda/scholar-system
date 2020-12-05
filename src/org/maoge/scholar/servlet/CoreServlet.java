@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.maoge.scholar.dao.DepartDao;
 import org.maoge.scholar.dao.MenuDao;
 import org.maoge.scholar.dao.ProjectDao;
 import org.maoge.scholar.dao.UserDao;
@@ -113,6 +114,13 @@ public class CoreServlet extends HttpServlet {
 			projectDao.update(project);
 			result.setCode(0);
 			result.setMsg("操作成功");
+		}
+		// 获取机构分页
+		else if (method.equals("getDepartPage")) {
+			DepartDao departDao = new DepartDao();
+			total = departDao.getCount();
+			result.setTotal(total);
+			result.setRows(departDao.getPage(page, rows));
 		}
 		return result;
 	}

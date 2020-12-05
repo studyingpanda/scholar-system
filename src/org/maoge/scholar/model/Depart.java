@@ -9,6 +9,19 @@ public class Depart {
 	private String type;
 	private String parentId;
 
+	/**
+	 * 非数据库字段，仅用于关联查询
+	 */
+	private String parentName;
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
 	public String getId() {
 		return id;
 	}
