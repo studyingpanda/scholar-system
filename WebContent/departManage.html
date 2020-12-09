@@ -14,10 +14,9 @@
 
 <body>
 	<div class="tool-box">
-		<a id="btn" onclick="btnAddClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">新增</a>
-		<a id="btn" onclick="btnEditClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">编辑</a>
-		<a id="btn" onclick="btnRemoveClick()" href="#" class="easyui-linkbutton"
-			data-options="iconCls:'icon-remove'">删除</a>
+		<a id="btn" onclick="btnAddClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">新增</a> <a
+			id="btn" onclick="btnEditClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">编辑</a> <a
+			id="btn" onclick="btnRemoveClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
 	</div>
 	<table id="mainTable" title="机构列表" class="easyui-datagrid" url="CoreServlet?method=getDepartPage" pagination="true"
 		singleSelect="true" fitColumns="true">
@@ -36,13 +35,11 @@
 		<table>
 			<tr>
 				<td>类型：</td>
-				<td>
-					<select id="add-type" class="easyui-combobox" style="width: 200px;">
+				<td><select id="add-type" class="easyui-combobox" style="width: 200px;">
 						<option value="school">学校</option>
 						<option value="college">学院</option>
 						<option value="class">班级</option>
-					</select>
-				</td>
+					</select></td>
 			</tr>
 			<tr>
 				<td>名称：</td>
@@ -50,11 +47,9 @@
 			</tr>
 			<tr>
 				<td>上级机构：</td>
-				<td>
-					<select id="add-parentId" class="easyui-combobox" style="width: 200px;">
+				<td><select id="add-parentId" class="easyui-combobox" style="width: 200px;">
 						<option value="-1">请选择</option>
-					</select>
-				</td>
+					</select></td>
 			</tr>
 			<tr>
 				<td></td>
@@ -72,13 +67,11 @@
 			</tr>
 			<tr>
 				<td>类型：</td>
-				<td>
-					<select id="add-type" class="easyui-combobox" style="width: 200px;">
+				<td><select id="edit-type" class="easyui-combobox" style="width: 200px;">
 						<option value="school">学校</option>
 						<option value="college">学院</option>
 						<option value="class">班级</option>
-					</select>
-				</td>
+					</select></td>
 			</tr>
 			<tr>
 				<td>名称：</td>
@@ -86,11 +79,9 @@
 			</tr>
 			<tr>
 				<td>上级机构：</td>
-				<td>
-					<select id="add-parentId" class="easyui-combobox" style="width: 200px;">
+				<td><select id="edit-parentId" class="easyui-combobox" style="width: 200px;">
 						<option value="-1">请选择</option>
-					</select>
-				</td>
+					</select></td>
 			</tr>
 			<tr>
 				<td></td>
@@ -100,6 +91,50 @@
 	</div>
 </body>
 <script>
+	// 初始化
+	$(function () {
+		loadDeparts();
+	});
+	// 加载上级机构
+	function loadDeparts() {
+		$.ajax({
+			url: "CoreServlet?method=getDepartList",
+			type: "post",
+			dataType: "json",
+			data: null,
+			success: function (res) {
+				console.log(res);
+				if (res.code == 0) {
+					// 为指定下拉框增加选项
+					addItemsForSelect("#add-parentId", res.data);
+					addItemsForSelect("#edit-parentId", res.data);
+				} else {//提示错误信息
+					alert(res.msg);
+				}
+			},
+		});
+	}
+	// 为下拉框增加选项
+	function addItemsForSelect(id, data) {
+		// 清空选项
+		$(id).combobox("clear");
+		// 动态添加的选项
+		var items = [{
+			"value": "-1",
+			"text": "请选择"
+		}];
+		$.each(data, function (i, v) {//遍历返回值
+			items.push({
+				"value": v.id,
+				"text": v.name
+			});
+		});
+		// 加载数据
+		$(id).combobox("loadData", items);
+		// 设置默认选中值
+		$(id).combobox("setValue", "-1");
+	}
+
 	// 新增点击
 	function btnAddClick() {
 		$('#dialog-add').dialog('open');
@@ -107,12 +142,12 @@
 	// 新增保存
 	function btnAddSubmit() {
 		var param = {
-			type: $("#add-type").val(),
+			type: $("#add-type").combobox("getValue"),
 			name: $("#add-name").val(),
-			about: $("#add-about").val(),
+			parentId: $("#add-parentId").combobox("getValue"),//获取选中项的值
 		}
 		$.ajax({
-			url: "CoreServlet?method=addProject",
+			url: "CoreServlet?method=addDepart",
 			type: "post",
 			dataType: "json",
 			data: param,
@@ -139,19 +174,19 @@
 		$("#edit-id").textbox("setValue", row.id);
 		$("#edit-type").combobox("setValue", row.type);
 		$("#edit-name").textbox("setValue", row.name);
-		$("#edit-about").textbox("setValue", row.about);
+		$("#edit-parentId").combobox("setValue", row.parentId);
 		$('#dialog-edit').dialog('open');
 	}
 	// 编辑保存
 	function btnEditSubmit() {
 		var param = {
 			id: $("#edit-id").val(),
-			type: $("#edit-type").val(),
+			type: $("#edit-type").combobox("getValue"),
 			name: $("#edit-name").val(),
-			about: $("#edit-about").val(),
+			parentId: $("#edit-parentId").combobox("getValue"),
 		}
 		$.ajax({
-			url: "CoreServlet?method=editProject",
+			url: "CoreServlet?method=editDepart",
 			type: "post",
 			dataType: "json",
 			data: param,

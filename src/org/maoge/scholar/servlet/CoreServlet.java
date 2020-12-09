@@ -14,6 +14,7 @@ import org.maoge.scholar.dao.DepartDao;
 import org.maoge.scholar.dao.MenuDao;
 import org.maoge.scholar.dao.ProjectDao;
 import org.maoge.scholar.dao.UserDao;
+import org.maoge.scholar.model.Depart;
 import org.maoge.scholar.model.Project;
 import org.maoge.scholar.model.Result;
 import org.maoge.scholar.model.User;
@@ -115,12 +116,41 @@ public class CoreServlet extends HttpServlet {
 			result.setCode(0);
 			result.setMsg("操作成功");
 		}
+		// 获取机构列表
+		else if (method.equals("getDepartList")) {
+			DepartDao departDao = new DepartDao();
+			result.setCode(0);
+			result.setData(departDao.getAll());
+		}
 		// 获取机构分页
 		else if (method.equals("getDepartPage")) {
 			DepartDao departDao = new DepartDao();
 			total = departDao.getCount();
 			result.setTotal(total);
 			result.setRows(departDao.getPage(page, rows));
+		}
+		// 新增机构保存
+		else if (method.equals("addDepart")) {
+			DepartDao departDao = new DepartDao();
+			Depart depart = new Depart();
+			depart.setType(request.getParameter("type"));
+			depart.setName(request.getParameter("name"));
+			depart.setParentId(request.getParameter("parentId"));
+			departDao.insert(depart);
+			result.setCode(0);
+			result.setMsg("操作成功");
+		}
+		// 编辑机构保存
+		else if (method.equals("editDepart")) {
+			DepartDao departDao = new DepartDao();
+			Depart depart = new Depart();
+			depart.setId(request.getParameter("id"));
+			depart.setType(request.getParameter("type"));
+			depart.setName(request.getParameter("name"));
+			depart.setParentId(request.getParameter("parentId"));
+			departDao.update(depart);
+			result.setCode(0);
+			result.setMsg("操作成功");
 		}
 		return result;
 	}
