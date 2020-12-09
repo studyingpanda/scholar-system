@@ -117,4 +117,32 @@ public class UserDao {
 		ConnectionUtils.releaseConnection(conn);
 		return users;
 	}
+
+	/**
+	 * 获取数量(通过角色和机构信息)
+	 */
+	public int getCountByRoleAndDepart(String role, String departId) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select count(u.id) from user u left join depart d on u.departId=d.id where u.role=? and (d.id=? or d.parentId=?)";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { role, departId, departId };
+		Number number = (Number) runner.query(conn, sql, new ScalarHandler(), params);
+		int value = number.intValue();
+		ConnectionUtils.releaseConnection(conn);
+		return value;
+	}
+
+	/**
+	 * 分页查询(通过角色和机构信息)
+	 */
+	public List<User> getPageByRoleAndDepart(int page, int rows, String role, String departId) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select u.* from user u left join depart d on u.departId=d.id where u.role=? and (d.id=? or d.parentId=?) limit ?,?";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { role, departId, departId, (page - 1) * rows, rows };
+		List<User> users = runner.query(conn, sql, new BeanListHandler<User>(User.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		return users;
+	}
+
 }

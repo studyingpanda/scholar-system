@@ -37,6 +37,7 @@ public class CoreServlet extends HttpServlet {
 			result = new Result();
 			result.setCode(9999);
 			result.setMsg(ex.getMessage());
+			System.err.println(ex.getMessage());
 		} finally {
 			out.write(JSON.toJSONString(result));
 			out.flush();
@@ -50,6 +51,11 @@ public class CoreServlet extends HttpServlet {
 	public Result handleRequest(HttpServletRequest request) throws Exception {
 		Result result = new Result();
 		String method = request.getParameter("method");
+		// 如果未登录，且不是请求的登录方法，直接抛出异常
+		User loginUser = (User) request.getSession().getAttribute("loginUser");
+		if (loginUser == null && !method.equals("login")) {
+			throw new Exception("未登录！");
+		}
 		// 请求页码、每页显示行数、总数
 		int page = 1, rows = 10, total = 0;
 		if (method.contains("Page") == true) {// 当前为分页请求
@@ -77,10 +83,6 @@ public class CoreServlet extends HttpServlet {
 		}
 		// 查询登录用户拥有的菜单
 		else if (method.equals("getMenusOfUser")) {
-			User loginUser = (User) request.getSession().getAttribute("loginUser");
-			if (loginUser == null) {
-				throw new Exception("未登录！");
-			}
 			MenuDao menuDao = new MenuDao();
 			result.setData(menuDao.getMenusOfUser(loginUser));// 返回数据为对应菜单
 			result.setCode(0);
@@ -151,6 +153,21 @@ public class CoreServlet extends HttpServlet {
 			departDao.update(depart);
 			result.setCode(0);
 			result.setMsg("操作成功");
+		}
+		// 获取人员分页
+		else if (method.equals("getUserPage")) {
+			String queryRole = "";
+			if (loginUser.getRole().equals("schoolmaster")) {// 学校管理员，管理对象为学院管理员(所属机构为学校的下级机构)
+				queryRole = "collegemaster";
+			} else if (loginUser.getRole().equals("collegemaster")) {// 学院管理员，管理对象为本院的班主任(所属机构为学院的下级机构)
+				queryRole = "classmaster";
+			} else if (loginUser.getRole().equals("classmaster")) {// 班主任，管理对象为本班的学生(所属机构为班级的当前机构)
+				queryRole = "student";
+			}
+			UserDao userDao = new UserDao();
+			total = userDao.getCountByRoleAndDepart(queryRole, loginUser.getDepartId());
+			result.setTotal(total);
+			result.setRows(userDao.getPageByRoleAndDepart(page, rows, queryRole, loginUser.getDepartId()));
 		}
 		return result;
 	}
