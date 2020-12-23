@@ -2,25 +2,23 @@
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<title>用户管理</title>
-	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
-	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
-	<script type="text/javascript" src="easyui/jquery.min.js"></script>
-	<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
-	<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
+<meta charset="UTF-8">
+<title>用户管理</title>
+<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<script type="text/javascript" src="easyui/jquery.min.js"></script>
+<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
 </head>
 
 <body>
 	<div class="tool-box">
-		<a id="btn" onclick="btnAddClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">新增</a>
-		<a id="btn" onclick="btnEditClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">编辑</a>
-		<a id="btn" onclick="btnRemoveClick()" href="#" class="easyui-linkbutton"
+		<a id="btn" onclick="btnAddClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">新增</a> <a id="btn" onclick="btnEditClick()" href="#"
+			class="easyui-linkbutton" data-options="iconCls:'icon-edit'">编辑</a> <a id="btn" onclick="btnRemoveClick()" href="#" class="easyui-linkbutton"
 			data-options="iconCls:'icon-remove'">删除</a>
 	</div>
-	<table id="mainTable" title="人员列表" class="easyui-datagrid" url="CoreServlet?method=getUserPage" pagination="true"
-		singleSelect="true" fitColumns="true">
+	<table id="mainTable" title="人员列表" class="easyui-datagrid" url="CoreServlet?method=getUserPage" pagination="true" singleSelect="true" fitColumns="true">
 		<thead>
 			<tr>
 				<th data-options="field:'id',width:50">序号</th>
@@ -32,8 +30,7 @@
 		</thead>
 	</table>
 	<!-- 新增弹窗 -->
-	<div id="dialog-add" class="easyui-dialog" title="新增" data-options="iconCls:'icon-ok',closed:'true'"
-		style="width: 600px; height: 400px; padding: 10px">
+	<div id="dialog-add" class="easyui-dialog" title="新增" data-options="iconCls:'icon-ok',closed:'true'" style="width: 600px; height: 400px; padding: 10px">
 		<table>
 			<tr>
 				<td>姓名</td>
@@ -45,20 +42,13 @@
 			</tr>
 			<tr>
 				<td>角色：</td>
-				<td>
-					<!-- 注意人员的角色需要根据登录用户信息确定 -->
-					<select id="add-role" class="easyui-combobox" style="width: 200px;">
-					</select>
-				</td>
+				<td><select id="add-role" class="easyui-combobox" style="width: 200px;"></select></td>
 			</tr>
 			<tr>
 				<td>所属机构：</td>
-				<td>
-					<!-- 注意人员所属机构需要根据登录用户信息确定 -->
-					<select id="add-departId" class="easyui-combobox" style="width: 200px;">
+				<td><select id="add-departId" class="easyui-combobox" style="width: 200px;">
 						<option value="-1">请选择</option>
-					</select>
-				</td>
+				</select></td>
 			</tr>
 			<tr>
 				<td></td>
@@ -67,8 +57,7 @@
 		</table>
 	</div>
 	<!-- 编辑弹窗 -->
-	<div id="dialog-edit" class="easyui-dialog" title="编辑" data-options="iconCls:'icon-ok',closed:'true'"
-		style="width: 600px; height: 400px; padding: 10px">
+	<div id="dialog-edit" class="easyui-dialog" title="编辑" data-options="iconCls:'icon-ok',closed:'true'" style="width: 600px; height: 400px; padding: 10px">
 		<table>
 			<tr>
 				<td>编号：</td>
@@ -84,20 +73,13 @@
 			</tr>
 			<tr>
 				<td>角色：</td>
-				<td>
-					<!-- 注意人员的角色需要根据登录用户信息确定 -->
-					<select id="add-role" class="easyui-combobox" style="width: 200px;">
-					</select>
-				</td>
+				<td><select id="add-role" class="easyui-combobox" style="width: 200px;"></select></td>
 			</tr>
 			<tr>
 				<td>所属机构：</td>
-				<td>
-					<!-- 注意人员所属机构需要根据登录用户信息确定 -->
-					<select id="add-departId" class="easyui-combobox" style="width: 200px;">
+				<td><select id="add-departId" class="easyui-combobox" style="width: 200px;">
 						<option value="-1">请选择</option>
-					</select>
-				</td>
+				</select></td>
 			</tr>
 			<tr>
 				<td></td>
@@ -108,23 +90,23 @@
 </body>
 <script>
 	// 初始化
-	$(function () {
-		//loadDeparts();
+	$(function() {
+		loadDeparts();
 	});
 	// 加载上级机构
 	function loadDeparts() {
 		$.ajax({
-			url: "CoreServlet?method=getDepartList",
-			type: "post",
-			dataType: "json",
-			data: null,
-			success: function (res) {
+			url : "CoreServlet?method=getDepartList",
+			type : "post",
+			dataType : "json",
+			data : null,
+			success : function(res) {
 				console.log(res);
 				if (res.code == 0) {
 					// 为指定下拉框增加选项
 					addItemsForSelect("#add-parentId", res.data);
 					addItemsForSelect("#edit-parentId", res.data);
-				} else {//提示错误信息
+				} else { //提示错误信息
 					alert(res.msg);
 				}
 			},
@@ -135,14 +117,14 @@
 		// 清空选项
 		$(id).combobox("clear");
 		// 动态添加的选项
-		var items = [{
-			"value": "-1",
-			"text": "请选择"
-		}];
-		$.each(data, function (i, v) {//遍历返回值
+		var items = [ {
+			"value" : "-1",
+			"text" : "请选择"
+		} ];
+		$.each(data, function(i, v) { //遍历返回值
 			items.push({
-				"value": v.id,
-				"text": v.name
+				"value" : v.id,
+				"text" : v.name
 			});
 		});
 		// 加载数据
@@ -158,21 +140,21 @@
 	// 新增保存
 	function btnAddSubmit() {
 		var param = {
-			type: $("#add-type").combobox("getValue"),
-			name: $("#add-name").val(),
-			parentId: $("#add-parentId").combobox("getValue"),//获取选中项的值
+			type : $("#add-type").combobox("getValue"),
+			name : $("#add-name").val(),
+			parentId : $("#add-parentId").combobox("getValue"), //获取选中项的值
 		}
 		$.ajax({
-			url: "CoreServlet?method=addDepart",
-			type: "post",
-			dataType: "json",
-			data: param,
-			success: function (res) {
+			url : "CoreServlet?method=addDepart",
+			type : "post",
+			dataType : "json",
+			data : param,
+			success : function(res) {
 				console.log(res);
-				if (res.code == 0) {//成功则刷新表格
+				if (res.code == 0) { //成功则刷新表格
 					$('#mainTable').datagrid('reload');
 					$('#dialog-add').dialog('close');
-				} else {//提示错误信息
+				} else { //提示错误信息
 					alert(res.msg);
 				}
 			},
@@ -196,22 +178,22 @@
 	// 编辑保存
 	function btnEditSubmit() {
 		var param = {
-			id: $("#edit-id").val(),
-			type: $("#edit-type").combobox("getValue"),
-			name: $("#edit-name").val(),
-			parentId: $("#edit-parentId").combobox("getValue"),
+			id : $("#edit-id").val(),
+			type : $("#edit-type").combobox("getValue"),
+			name : $("#edit-name").val(),
+			parentId : $("#edit-parentId").combobox("getValue"),
 		}
 		$.ajax({
-			url: "CoreServlet?method=editDepart",
-			type: "post",
-			dataType: "json",
-			data: param,
-			success: function (res) {
+			url : "CoreServlet?method=editDepart",
+			type : "post",
+			dataType : "json",
+			data : param,
+			success : function(res) {
 				console.log(res);
-				if (res.code == 0) {//成功则刷新表格
+				if (res.code == 0) { //成功则刷新表格
 					$('#mainTable').datagrid('reload');
 					$('#dialog-edit').dialog('close');
-				} else {//提示错误信息
+				} else { //提示错误信息
 					alert(res.msg);
 				}
 			},
@@ -219,12 +201,14 @@
 	}
 	// 格式化类型
 	function formatRole(val, row) {
-		if (val == "school") {
-			return "学校";
-		} else if (val == "college") {
-			return "学院";
+		if (val == "schoolmaster") {
+			return "学校管理员";
+		} else if (val == "collegemaster") {
+			return "学院管理员";
+		} else if (val == "classmaster") {
+			return "班主任";
 		} else {
-			return "班级";
+			return "学生";
 		}
 	}
 </script>
