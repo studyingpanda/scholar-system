@@ -80,6 +80,7 @@
 				role: $("#input-role").combobox("getValue"),
 				ids: ids.join(","),
 			};
+			console.log("#param:",param);
 			$.ajax({
 				url: "CoreServlet?method=submitMenusByRole",
 				type: "post",
