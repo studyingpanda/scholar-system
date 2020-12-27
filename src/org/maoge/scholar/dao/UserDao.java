@@ -34,9 +34,8 @@ public class UserDao {
 	 */
 	public void insert(User user) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
-		String sql = "insert into user(userName,loginName,password,role,departId)values(?,?,?)";
-		Object[] params = { user.getUserName(), user.getLoginName(), user.getPassword(), user.getRole(),
-				user.getDepartId() };
+		String sql = "insert into user(userName,loginName,password,role,departId)values(?,?,?,?,?)";
+		Object[] params = { user.getUserName(), user.getLoginName(), user.getPassword(), user.getRole(), user.getDepartId() };
 		QueryRunner runner = new QueryRunner();
 		runner.update(conn, sql, params);
 		ConnectionUtils.releaseConnection(conn);
@@ -60,8 +59,7 @@ public class UserDao {
 	public void update(User user) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
 		String sql = "update user set userName=?,loginName=?,password=?,role=?,departId=? where id =?";
-		Object[] params = { user.getUserName(), user.getLoginName(), user.getPassword(), user.getRole(),
-				user.getDepartId(), user.getId() };
+		Object[] params = { user.getUserName(), user.getLoginName(), user.getPassword(), user.getRole(), user.getDepartId(), user.getId() };
 		QueryRunner runner = new QueryRunner();
 		runner.update(conn, sql, params);
 		ConnectionUtils.releaseConnection(conn);
@@ -110,7 +108,7 @@ public class UserDao {
 	 */
 	public List<User> getPage(int page, int rows) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
-		String sql = "select * from user limit ?,?";
+		String sql = "select u.*,d.name as departName from user u left join depart d on u.departId=d.id limit ?,?";
 		QueryRunner runner = new QueryRunner();
 		Object[] params = { (page - 1) * rows, rows };
 		List<User> users = runner.query(conn, sql, new BeanListHandler<User>(User.class), params);
@@ -119,7 +117,7 @@ public class UserDao {
 	}
 
 	/**
-	 * 获取数量(通过角色和机构信息)
+	 * 获取数量(通过角色和机构信息，暂时用不到)
 	 */
 	public int getCountByRoleAndDepart(String role, String departId) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
@@ -133,7 +131,7 @@ public class UserDao {
 	}
 
 	/**
-	 * 分页查询(通过角色和机构信息)
+	 * 分页查询(通过角色和机构信息，暂时用不到)
 	 */
 	public List<User> getPageByRoleAndDepart(int page, int rows, String role, String departId) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();

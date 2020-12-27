@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+		<script type="text/javascript" src="easyui/jquery.min.js"></script>
+		<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
+	</head>
+
+	<body>
+		<div class="tool-box">
+			<select id="input-role" class="easyui-combobox" style="width: 200px;" data-options="onChange:onChangeRole">
+				<option value="-1">请选择角色</option>
+				<option value="schoolmaster">学校管理员</option>
+				<option value="collegemaster">学院管理员</option>
+				<option value="classmaster">班主任</option>
+				<option value="student">学生</option>
+			</select>
+			<a id="btn" onclick="btnSubmitClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">提交</a>
+		</div>
+		<table id="mainTable" title="角色对应菜单列表" class="easyui-datagrid" fitColumns="true">
+			<thead>
+				<tr>
+					<th data-options="field:'checked',width:50" checkbox="true"></th><!-- 复选框 -->
+					<th data-options="field:'id',width:50">序号</th>
+					<th data-options="field:'name',width:50">名称</th>
+					<th data-options="field:'path',width:100">访问路径</th>
+				</tr>
+			</thead>
+		</table>
+	</body>
+	<script>
+		// 初始化
+		$(function() {
+			loadTableData();
+		});
+		// 选中项变化
+		function onChangeRole() {
+			loadTableData();
+		}
+		// 加载表格数据
+		function loadTableData() {
+			var param = {
+				role: $("#input-role").combobox("getValue")
+			};
+			console.log("#param:", param);
+			$.ajax({
+				url: "CoreServlet?method=getMenusByRole",
+				type: "post",
+				dataType: "json",
+				data: param,
+				success: function(res) {
+					if (res.code == 0) {
+						console.log("## res:", res);
+						$("#mainTable").datagrid("loadData", res); //动态取数据
+					} else { //提示错误信息
+						alert(res.msg);
+					}
+				},
+			});
+		}
+		// 提交修改
+		function btnSubmitClick() {
+			if ($("#input-role").combobox("getValue") == "-1") {
+				alert("请先选择角色!");
+				return;
+			}
+			// 获取选中项
+			var checkedItems = $("#mainTable").datagrid("getChecked");
+			// 选中菜单的id数组
+			var ids = [];
+			$.each(checkedItems, function(i, v) {
+				ids.push(v.id);
+			});
+			var param = {
+				role: $("#input-role").combobox("getValue"),
+				ids: ids.join(","),
+			};
+			$.ajax({
+				url: "CoreServlet?method=submitMenusByRole",
+				type: "post",
+				dataType: "json",
+				data: param,
+				success: function(res) {
+					if (res.code == 0) {
+						alert("提交成功！");
+					} else { //提示错误信息
+						alert(res.msg);
+					}
+				},
+			});
+		}
+	</script>
+</html>

@@ -17,10 +17,12 @@ import org.maoge.scholar.utils.ConnectionUtils;
  */
 public class MenuDao {
 
+	
+
 	/**
 	 * 获取用户拥有的菜单
 	 */
-	public List<Menu> getMenusOfUser(User user) throws SQLException {
+	public List<Menu> getMenusOfUser(User user) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
 		String sql = "select * from menu where id in (select menuId from rolemenu where role=?)";
 		QueryRunner runner = new QueryRunner();

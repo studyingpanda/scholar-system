@@ -7,6 +7,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.maoge.scholar.model.Menu;
 import org.maoge.scholar.model.RoleMenu;
 import org.maoge.scholar.utils.ConnectionUtils;
 
@@ -14,12 +15,59 @@ import org.maoge.scholar.utils.ConnectionUtils;
  * 项目数据访问类
  */
 public class RoleMenuDao {
+
+	/**
+	 * 通过角色获取菜单
+	 */
+	public List<Menu> getMenusByRole(String role) throws Exception {
+		// 全部菜单
+		MenuDao menuDao = new MenuDao();
+		List<Menu> allMenus = menuDao.getAll();
+		// 角色对应的菜单(应选中的)
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select * from menu where id in (select menuId from rolemenu where role=?)";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { role };
+		List<Menu> selectedMenus = runner.query(conn, sql, new BeanListHandler<Menu>(Menu.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		// 选中
+		for (Menu one : allMenus) {
+			for (Menu selected : selectedMenus) {
+				if (one.getId().equals(selected.getId())) {
+					one.setChecked(true);
+					break;
+				}
+			}
+		}
+		return allMenus;
+	}
+
+	/**
+	 * 提交权限
+	 */
+	public void submitMenusByRole(String role, String[] menuIds) throws Exception {
+		// 先删除角色对应所有菜单
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "delete from rolemenu where role =?";
+		Object[] params = { role };
+		QueryRunner runner = new QueryRunner();
+		runner.update(conn, sql, params);
+		// 然后逐一新增rolemenu
+		for (String menuId : menuIds) {
+			RoleMenu one = new RoleMenu();
+			one.setMenuId(menuId);
+			one.setRole(role);
+			this.insert(one);
+		}
+		ConnectionUtils.releaseConnection(conn);
+	}
+
 	/**
 	 * 新增
 	 */
 	public void insert(RoleMenu roleMenu) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
-		String sql = "insert into roleMenu(roleId,menuId)values(?,?)";
+		String sql = "insert into roleMenu(role,menuId)values(?,?)";
 		Object[] params = { roleMenu.getRole(), roleMenu.getMenuId() };
 		QueryRunner runner = new QueryRunner();
 		runner.update(conn, sql, params);

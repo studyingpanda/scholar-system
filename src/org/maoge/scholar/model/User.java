@@ -4,13 +4,24 @@ package org.maoge.scholar.model;
  * ”√ªß
  */
 public class User {
-
 	private String id;
 	private String userName;
 	private String loginName;
 	private String password;
 	private String role;
 	private String departId;
+	/**
+	 * »ﬂ”‡≤È—Ø◊÷∂Œ
+	 */
+	private String departName;
+
+	public String getDepartName() {
+		return departName;
+	}
+
+	public void setDepartName(String departName) {
+		this.departName = departName;
+	}
 
 	public String getId() {
 		return id;

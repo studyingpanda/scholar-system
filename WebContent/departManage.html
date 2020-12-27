@@ -119,10 +119,7 @@
 		// 清空选项
 		$(id).combobox("clear");
 		// 动态添加的选项
-		var items = [{
-			"value": "-1",
-			"text": "请选择"
-		}];
+		var items = [];
 		$.each(data, function (i, v) {//遍历返回值
 			items.push({
 				"value": v.id,

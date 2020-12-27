@@ -13,8 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.maoge.scholar.dao.DepartDao;
 import org.maoge.scholar.dao.MenuDao;
 import org.maoge.scholar.dao.ProjectDao;
+import org.maoge.scholar.dao.RoleMenuDao;
 import org.maoge.scholar.dao.UserDao;
 import org.maoge.scholar.model.Depart;
+import org.maoge.scholar.model.Menu;
 import org.maoge.scholar.model.Project;
 import org.maoge.scholar.model.Result;
 import org.maoge.scholar.model.User;
@@ -156,18 +158,61 @@ public class CoreServlet extends HttpServlet {
 		}
 		// 获取人员分页
 		else if (method.equals("getUserPage")) {
-			String queryRole = "";
-			if (loginUser.getRole().equals("schoolmaster")) {// 学校管理员，管理对象为学院管理员(所属机构为学校的下级机构)
-				queryRole = "collegemaster";
-			} else if (loginUser.getRole().equals("collegemaster")) {// 学院管理员，管理对象为本院的班主任(所属机构为学院的下级机构)
-				queryRole = "classmaster";
-			} else if (loginUser.getRole().equals("classmaster")) {// 班主任，管理对象为本班的学生(所属机构为班级的当前机构)
-				queryRole = "student";
-			}
 			UserDao userDao = new UserDao();
-			total = userDao.getCountByRoleAndDepart(queryRole, loginUser.getDepartId());
+			total = userDao.getCount();
 			result.setTotal(total);
-			result.setRows(userDao.getPageByRoleAndDepart(page, rows, queryRole, loginUser.getDepartId()));
+			result.setRows(userDao.getPage(page, rows));
+		}
+		// 新增人员保存
+		else if (method.equals("addUser")) {
+			UserDao userDao = new UserDao();
+			User user = new User();
+			user.setUserName(request.getParameter("userName"));
+			user.setLoginName(request.getParameter("loginName"));
+			user.setRole(request.getParameter("role"));
+			user.setDepartId(request.getParameter("departId"));
+			user.setPassword("123456");
+			userDao.insert(user);
+			result.setCode(0);
+			result.setMsg("操作成功");
+		}
+		// 编辑人员保存
+		else if (method.equals("editUser")) {
+			UserDao userDao = new UserDao();
+			User user = new User();
+			user.setId(request.getParameter("id"));
+			user.setUserName(request.getParameter("userName"));
+			user.setLoginName(request.getParameter("loginName"));
+			user.setRole(request.getParameter("role"));
+			user.setDepartId(request.getParameter("departId"));
+			userDao.update(user);
+			result.setCode(0);
+			result.setMsg("操作成功");
+		}
+		// 删除用户
+		else if (method.equals("removeUser")) {
+			UserDao userDao = new UserDao();
+			userDao.deleteById(request.getParameter("id"));
+			result.setCode(0);
+			result.setMsg("操作成功");
+		}
+		// 获取权限分页
+		else if (method.equals("getMenusByRole")) {
+			RoleMenuDao roleMenuDao = new RoleMenuDao();
+			List<Menu> menus = roleMenuDao.getMenusByRole(request.getParameter("role"));
+			result.setCode(0);
+			result.setRows(menus);
+			result.setTotal(menus.size());
+		}
+		// 提交权限设置
+		else if (method.equals("submitMenusByRole")) {
+			String role = request.getParameter("role");
+			String[] ids = request.getParameter("ids").split(",");
+
+			RoleMenuDao roleMenuDao = new RoleMenuDao();
+			roleMenuDao.submitMenusByRole(role, ids);
+			result.setCode(0);
+			result.setMsg("操作成功");
 		}
 		return result;
 	}

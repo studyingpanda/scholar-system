@@ -4,9 +4,23 @@ package org.maoge.scholar.model;
  * 菜单
  */
 public class Menu {
+
 	private String id;
 	private String name;
 	private String path;
+
+	/**
+	 * 冗余字段，用于返回是否选中信息
+	 */
+	private boolean checked;
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
 
 	public String getId() {
 		return id;
