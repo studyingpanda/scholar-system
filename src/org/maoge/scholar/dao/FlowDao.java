@@ -19,12 +19,8 @@ public class FlowDao {
 	 */
 	public void insert(Flow flow) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
-		String sql = "insert into flow(studentId,studentName,projectId,projectName,content,classUserId,classAdvice,schoolUserId,schoolAdvice"
-				+ ",currentUserId,currentNode)values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		Object[] params = { flow.getStudentId(), flow.getStudentName(), flow.getProjectId(), flow.getProjectName(),
-				flow.getContent(), flow.getClassUserId(), flow.getClassAdvice(), flow.getCollegeUserId(),
-				flow.getCollegeAdvice(), flow.getSchoolUserId(), flow.getSchoolUserId(), flow.getCurrentUserId(),
-				flow.getCurrentNode() };
+		String sql = "insert into flow(studentId,studentName,projectId,projectName,content,classUserId,classAdvice,collegeUserId,collegeAdvice,schoolUserId,schoolAdvice" + ",currentUserId,currentNode)values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		Object[] params = { flow.getStudentId(), flow.getStudentName(), flow.getProjectId(), flow.getProjectName(), flow.getContent(), flow.getClassUserId(), flow.getClassAdvice(), flow.getCollegeUserId(), flow.getCollegeAdvice(), flow.getSchoolUserId(), flow.getSchoolAdvice(), flow.getCurrentUserId(), flow.getCurrentNode() };
 		QueryRunner runner = new QueryRunner();
 		runner.update(conn, sql, params);
 		ConnectionUtils.releaseConnection(conn);
@@ -47,13 +43,8 @@ public class FlowDao {
 	 */
 	public void update(Flow flow) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
-		String sql = "update flow set studentId=?,studentName=?,projectId=?,projectName=?"
-				+ ",content=?,classUserId=?,classAdvice=?,collegeUserId=?,collegeAdvice=?,schoolUserId=?,schoolAdvice=?,"
-				+ "currentUserId=?,currentNode=? where id =?";
-		Object[] params = { flow.getStudentId(), flow.getStudentName(), flow.getProjectId(), flow.getProjectName(),
-				flow.getContent(), flow.getClassUserId(), flow.getClassAdvice(), flow.getCollegeUserId(),
-				flow.getCollegeAdvice(), flow.getSchoolUserId(), flow.getSchoolUserId(), flow.getCurrentUserId(),
-				flow.getCurrentNode(), flow.getId() };
+		String sql = "update flow set studentId=?,studentName=?,projectId=?,projectName=?" + ",content=?,classUserId=?,classAdvice=?,collegeUserId=?,collegeAdvice=?,schoolUserId=?,schoolAdvice=?," + "currentUserId=?,currentNode=? where id =?";
+		Object[] params = { flow.getStudentId(), flow.getStudentName(), flow.getProjectId(), flow.getProjectName(), flow.getContent(), flow.getClassUserId(), flow.getClassAdvice(), flow.getCollegeUserId(), flow.getCollegeAdvice(), flow.getSchoolUserId(), flow.getSchoolUserId(), flow.getCurrentUserId(), flow.getCurrentNode(), flow.getId() };
 		QueryRunner runner = new QueryRunner();
 		runner.update(conn, sql, params);
 		ConnectionUtils.releaseConnection(conn);
@@ -105,6 +96,33 @@ public class FlowDao {
 		String sql = "select * from flow limit ?,?";
 		QueryRunner runner = new QueryRunner();
 		Object[] params = { (page - 1) * rows, rows };
+		List<Flow> flows = runner.query(conn, sql, new BeanListHandler<Flow>(Flow.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		return flows;
+	}
+
+	/**
+	 * 获取数量
+	 */
+	public int getCountByStudentId(String studentId) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select count(id) from flow where studentId=?";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { studentId };
+		Number number = (Number) runner.query(conn, sql, new ScalarHandler(), params);
+		int value = number.intValue();
+		ConnectionUtils.releaseConnection(conn);
+		return value;
+	}
+
+	/**
+	 * 分页查询
+	 */
+	public List<Flow> getPageByStudentId(int page, int rows, String studentId) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select * from flow where studentId=? limit ?,?";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { studentId, (page - 1) * rows, rows };
 		List<Flow> flows = runner.query(conn, sql, new BeanListHandler<Flow>(Flow.class), params);
 		ConnectionUtils.releaseConnection(conn);
 		return flows;

@@ -20,8 +20,7 @@ public class QuestionDao {
 	public void insert(Question question) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
 		String sql = "insert into question(userId,userName,departId,departName,content,reply)values(?,?,?,?,?,?)";
-		Object[] params = { question.getUserId(), question.getUserName(), question.getDepartId(),
-				question.getDepartName(), question.getContent(), question.getReply() };
+		Object[] params = { question.getUserId(), question.getUserName(), question.getDepartId(), question.getDepartName(), question.getContent(), question.getReply() };
 		QueryRunner runner = new QueryRunner();
 		runner.update(conn, sql, params);
 		ConnectionUtils.releaseConnection(conn);
@@ -44,10 +43,8 @@ public class QuestionDao {
 	 */
 	public void update(Question question) throws Exception {
 		Connection conn = ConnectionUtils.getConnection();
-		String sql = "update question set userId=?,userName=?,departId=?,departName=?,"
-				+ "content=?,reply=? where id =?";
-		Object[] params = { question.getUserId(), question.getUserName(), question.getDepartId(),
-				question.getDepartName(), question.getContent(), question.getReply(), question.getId() };
+		String sql = "update question set userId=?,userName=?,departId=?,departName=?," + "content=?,reply=? where id =?";
+		Object[] params = { question.getUserId(), question.getUserName(), question.getDepartId(), question.getDepartName(), question.getContent(), question.getReply(), question.getId() };
 		QueryRunner runner = new QueryRunner();
 		runner.update(conn, sql, params);
 		ConnectionUtils.releaseConnection(conn);
@@ -98,7 +95,34 @@ public class QuestionDao {
 		Connection conn = ConnectionUtils.getConnection();
 		String sql = "select * from question limit ?,?";
 		QueryRunner runner = new QueryRunner();
-		Object[] params = { (page - 1) * rows, rows };
+		Object[] params = { (page - 1) * rows };
+		List<Question> questions = runner.query(conn, sql, new BeanListHandler<Question>(Question.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		return questions;
+	}
+
+	/**
+	 * 获取数量(通过userId)
+	 */
+	public int getCount(String userId) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select count(id) from question where userId=?";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { userId };
+		Number number = (Number) runner.query(conn, sql, new ScalarHandler(), params);
+		int value = number.intValue();
+		ConnectionUtils.releaseConnection(conn);
+		return value;
+	}
+
+	/**
+	 * 分页查询(通过userId)
+	 */
+	public List<Question> getPage(int page, int rows, String userId) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select * from question where userId=? limit ?,?";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { userId,(page - 1) * rows, rows };
 		List<Question> questions = runner.query(conn, sql, new BeanListHandler<Question>(Question.class), params);
 		ConnectionUtils.releaseConnection(conn);
 		return questions;

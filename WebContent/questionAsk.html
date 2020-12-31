@@ -1,162 +1,72 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-	<meta charset="UTF-8">
-	<title></title>
-	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
-	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
-	<script type="text/javascript" src="easyui/jquery.min.js"></script>
-	<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
-	<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+		<script type="text/javascript" src="easyui/jquery.min.js"></script>
+		<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
+	</head>
 
-<body>
-	<div class="tool-box">
-		<a id="btn" onclick="btnAddClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">反馈问题</a>
-	</div>
-	<table id="mainTable" title="已反馈问题列表" class="easyui-datagrid" url="CoreServlet?method=getProjectPage" pagination="true"
-		singleSelect="true" fitColumns="true">
-		<thead>
-			<tr>
-				<th data-options="field:'id',width:50">序号</th>
-				<th data-options="field:'type',width:50" formatter="formatType">类型</th>
-				<th data-options="field:'name',width:50">名称</th>
-				<th data-options="field:'about',width:100">简介</th>
-			</tr>
-		</thead>
-	</table>
-	<!-- 新增弹窗 -->
-	<div id="dialog-add" class="easyui-dialog" title="新增" data-options="iconCls:'icon-ok',closed:'true'"
-		style="width: 600px; height: 400px; padding: 10px">
-		<table>
-			<tr>
-				<td>类型：</td>
-				<td><select id="add-type" class="easyui-combobox" style="width: 200px;">
-						<option value="award">奖学金</option>
-						<option value="help">助学金</option>
-					</select></td>
-			</tr>
-			<tr>
-				<td>名称：</td>
-				<td><input id="add-name" class="easyui-textbox" style="width: 200px"></td>
-			</tr>
-			<tr>
-				<td>简介：</td>
-				<td><input id="add-about" class="easyui-textbox" style="width: 200px"></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><a id="btn" onclick="btnAddSubmit()" href="#" class="easyui-linkbutton">保存</a></td>
-			</tr>
+	<body>
+		<div class="tool-box">
+			<a id="btn" onclick="btnAddClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">反馈问题</a>
+		</div>
+		<table id="mainTable" title="已反馈问题列表" class="easyui-datagrid" url="CoreServlet?method=getQuestionPage" pagination="true"
+		 singleSelect="true" fitColumns="true">
+			<thead>
+				<tr>
+					<th data-options="field:'id',width:50">序号</th>
+					<th data-options="field:'userName',width:50">反馈人</th>
+					<th data-options="field:'departName',width:50">所属班级</th>
+					<th data-options="field:'content',width:100">问题内容</th>
+					<th data-options="field:'reply',width:100">问题答复</th>
+				</tr>
+			</thead>
 		</table>
-	</div>
-	<!-- 编辑弹窗 -->
-	<div id="dialog-edit" class="easyui-dialog" title="编辑" data-options="iconCls:'icon-ok',closed:'true'"
-		style="width: 600px; height: 400px; padding: 10px">
-		<table>
-			<tr>
-				<td>编号：</td>
-				<td><input id="edit-id" class="easyui-textbox" style="width: 200px" disabled></td>
-			</tr>
-			<tr>
-				<td>类型：</td>
-				<td><select id="edit-type" class="easyui-combobox" style="width: 200px;">
-						<option value="award">奖学金</option>
-						<option value="help">助学金</option>
-					</select></td>
-			</tr>
-			<tr>
-				<td>名称：</td>
-				<td><input id="edit-name" class="easyui-textbox" style="width: 200px"></td>
-			</tr>
-			<tr>
-				<td>简介：</td>
-				<td><input id="edit-about" class="easyui-textbox" style="width: 200px"></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><a id="btn" onclick="btnEditSubmit()" href="#" class="easyui-linkbutton">保存</a></td>
-			</tr>
-		</table>
-	</div>
-</body>
-<script>
-	// 新增点击
-	function btnAddClick() {
-		$('#dialog-add').dialog('open');
-	}
-	// 新增保存
-	function btnAddSubmit() {
-		var param = {
-			type: $("#add-type").val(),
-			name: $("#add-name").val(),
-			about: $("#add-about").val(),
+		<!-- 新增弹窗 -->
+		<div id="dialog-add" class="easyui-dialog" title="问题反馈" data-options="iconCls:'icon-ok',closed:'true'" style="width: 600px; height: 400px; padding: 10px">
+			<table>
+				<tr>
+					<td>反馈内容：</td>
+					<td><input id="add-content" class="easyui-textbox" style="width: 200px"></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><a id="btn" onclick="btnAddSubmit()" href="#" class="easyui-linkbutton">保存</a></td>
+				</tr>
+			</table>
+		</div>
+	</body>
+	<script>
+		// 新增点击
+		function btnAddClick() {
+			$('#dialog-add').dialog('open');
 		}
-		$.ajax({
-			url: "CoreServlet?method=addProject",
-			type: "post",
-			dataType: "json",
-			data: param,
-			success: function (res) {
-				console.log(res);
-				if (res.code == 0) {//成功则刷新表格
-					$('#mainTable').datagrid('reload');
-					$('#dialog-add').dialog('close');
-				} else {//提示错误信息
-					alert(res.msg);
-				}
-			},
-		});
-	}
-	// 编辑点击
-	function btnEditClick() {
-		// 获取当前选中行
-		var row = $('#mainTable').datagrid('getSelected');
-		if (row == null) {
-			alert("请选择要修改的行");
-			return;
+		// 新增保存
+		function btnAddSubmit() {
+			var param = {
+				content: $("#add-content").val()
+			}
+			$.ajax({
+				url: "CoreServlet?method=questionSubmit",
+				type: "post",
+				dataType: "json",
+				data: param,
+				success: function(res) {
+					console.log(res);
+					if (res.code == 0) { //成功则刷新表格
+						$('#mainTable').datagrid('reload');
+						$('#dialog-add').dialog('close');
+					} else { //提示错误信息
+						alert(res.msg);
+					}
+				},
+			});
 		}
-		// 将选中行信息设置到弹窗 
-		$("#edit-id").textbox("setValue", row.id);
-		$("#edit-type").combobox("setValue", row.type);
-		$("#edit-name").textbox("setValue", row.name);
-		$("#edit-about").textbox("setValue", row.about);
-		$('#dialog-edit').dialog('open');
-	}
-	// 编辑保存
-	function btnEditSubmit() {
-		var param = {
-			id: $("#edit-id").val(),
-			type: $("#edit-type").val(),
-			name: $("#edit-name").val(),
-			about: $("#edit-about").val(),
-		}
-		$.ajax({
-			url: "CoreServlet?method=editProject",
-			type: "post",
-			dataType: "json",
-			data: param,
-			success: function (res) {
-				console.log(res);
-				if (res.code == 0) {//成功则刷新表格
-					$('#mainTable').datagrid('reload');
-					$('#dialog-edit').dialog('close');
-				} else {//提示错误信息
-					alert(res.msg);
-				}
-			},
-		});
-	}
-	// 格式化类型
-	function formatType(val, row) {
-		if (val == "award") {
-			return "奖学金";
-		} else {
-			return "助学金";
-		}
-	}
-</script>
-
+	</script>
 </html>

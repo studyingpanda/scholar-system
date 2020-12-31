@@ -17,6 +17,45 @@ import org.maoge.scholar.utils.ConnectionUtils;
 public class UserDao {
 
 	/**
+	 * 获取学生对应的班主任
+	 */
+	public User getClassMaster(User student) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select * from user where role=? and departId=?";
+		Object[] params = { "classmaster", student.getDepartId() };
+		QueryRunner runner = new QueryRunner();
+		User user = (User) runner.query(conn, sql, new BeanHandler<User>(User.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		return user;
+	}
+
+	/**
+	 * 获取学生对应的学院管理员
+	 */
+	public User getCollegeMaster(User student) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select u.* from user u where u.role=? and u.departId =(select d.parentId from depart d where d.id=?)";
+		Object[] params = { "collegemaster", student.getDepartId() };
+		QueryRunner runner = new QueryRunner();
+		User user = (User) runner.query(conn, sql, new BeanHandler<User>(User.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		return user;
+	}
+
+	/**
+	 * 获取学校管理员
+	 */
+	public User getSchoolMaster() throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select u.* from user u where u.role=?";
+		Object[] params = { "schoolmaster" };
+		QueryRunner runner = new QueryRunner();
+		User user = (User) runner.query(conn, sql, new BeanHandler<User>(User.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		return user;
+	}
+
+	/**
 	 * 通过登录名、密码获取用户
 	 */
 	public List<User> getUsersByLoginNameAndPassword(String loginName, String password) throws SQLException {

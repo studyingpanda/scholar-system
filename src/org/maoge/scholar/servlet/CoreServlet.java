@@ -11,13 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.maoge.scholar.dao.DepartDao;
+import org.maoge.scholar.dao.FlowDao;
 import org.maoge.scholar.dao.MenuDao;
 import org.maoge.scholar.dao.ProjectDao;
+import org.maoge.scholar.dao.QuestionDao;
 import org.maoge.scholar.dao.RoleMenuDao;
 import org.maoge.scholar.dao.UserDao;
 import org.maoge.scholar.model.Depart;
+import org.maoge.scholar.model.Flow;
 import org.maoge.scholar.model.Menu;
 import org.maoge.scholar.model.Project;
+import org.maoge.scholar.model.Question;
 import org.maoge.scholar.model.Result;
 import org.maoge.scholar.model.User;
 
@@ -213,6 +217,98 @@ public class CoreServlet extends HttpServlet {
 			roleMenuDao.submitMenusByRole(role, ids);
 			result.setCode(0);
 			result.setMsg("操作成功");
+		}
+		// 获取问题列表
+		else if (method.equals("getQuestionPage")) {
+			if (loginUser.getRole().equals("schoolmaster")) {// 管理员查看全部问题
+				QuestionDao questionDao = new QuestionDao();
+				total = questionDao.getCount();
+				result.setTotal(total);
+				result.setRows(questionDao.getPage(page, rows));
+			} else if (loginUser.getRole().equals("student")) {// 学生查看自己提交的问题
+				QuestionDao questionDao = new QuestionDao();
+				total = questionDao.getCount(loginUser.getId());
+				result.setTotal(total);
+				result.setRows(questionDao.getPage(page, rows, loginUser.getId()));
+			}
+		}
+		// 提交问题
+		else if (method.equals("questionSubmit")) {
+			// 获取机构信息
+			DepartDao departDao = new DepartDao();
+			Depart depart = departDao.getById(loginUser.getDepartId());
+			// 组装问题信息
+			Question question = new Question();
+			question.setUserId(loginUser.getId());
+			question.setUserName(loginUser.getUserName());
+			question.setDepartId(depart.getId());
+			question.setDepartName(depart.getName());
+			question.setContent(request.getParameter("content"));
+			// 插入数据库
+			QuestionDao questionDao = new QuestionDao();
+			questionDao.insert(question);
+			result.setCode(0);
+			result.setMsg("操作成功");
+		}
+		// 问题反馈
+		else if (method.equals("editQuestion")) {
+			QuestionDao questionDao = new QuestionDao();
+			Question question = new Question();
+			question.setId(request.getParameter("id"));
+			question.setUserId(request.getParameter("userId"));
+			question.setUserName(request.getParameter("userName"));
+			question.setDepartId(request.getParameter("departId"));
+			question.setDepartName(request.getParameter("departName"));
+			question.setContent(request.getParameter("content"));
+			question.setReply(request.getParameter("reply"));
+			questionDao.update(question);
+			result.setCode(0);
+			result.setMsg("操作成功");
+		}
+		// 获取项目列表
+		else if (method.equals("getProjectList")) {
+			ProjectDao projectDao = new ProjectDao();
+			result.setCode(0);
+			result.setData(projectDao.getAll());
+		}
+		// 获取学生申请流程列表
+		else if (method.equals("getStudentApplyFlowPage")) {
+			FlowDao flowDao = new FlowDao();
+			total = flowDao.getCountByStudentId(loginUser.getId());
+			result.setTotal(total);
+			result.setRows(flowDao.getPageByStudentId(page, rows, loginUser.getId()));
+		}
+		// 学生申请提交
+		else if (method.equals("applySubmit")) {
+			// 获取网页提交的信息
+			String projectId = request.getParameter("projectId");
+			String projectName = request.getParameter("projectName");
+			String content = request.getParameter("content");
+			// 获取管理员
+			UserDao userDao = new UserDao();
+			User classMaster = userDao.getClassMaster(loginUser);
+			User collegeMaster = userDao.getCollegeMaster(loginUser);
+			User schoolMaster = userDao.getSchoolMaster();
+			// 新增
+			FlowDao flowDao = new FlowDao();
+			Flow flow = new Flow();
+			flow.setStudentId(loginUser.getId());
+			flow.setStudentName(loginUser.getUserName());
+			flow.setProjectId(projectId);
+			flow.setProjectName(projectName);
+			flow.setContent(content);
+			flow.setClassUserId(classMaster.getId());
+			flow.setClassAdvice("");
+			flow.setCollegeUserId(collegeMaster.getId());
+			flow.setCollegeAdvice("");
+			flow.setSchoolUserId(schoolMaster.getId());
+			flow.setSchoolAdvice("");
+			flow.setCurrentUserId(classMaster.getId());
+			flow.setCurrentNode("class");
+			flowDao.insert(flow);
+			result.setCode(0);
+			result.setMsg("操作成功");
+
 		}
 		return result;
 	}
