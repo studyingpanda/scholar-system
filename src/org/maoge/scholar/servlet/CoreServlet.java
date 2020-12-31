@@ -309,6 +309,48 @@ public class CoreServlet extends HttpServlet {
 			result.setCode(0);
 			result.setMsg("操作成功");
 		}
+		// 获取待审批记录
+		else if (method.equals("getAuditPage")) {
+			FlowDao flowDao = new FlowDao();
+			total = flowDao.getCountByCurrentUserId(loginUser.getId());
+			result.setTotal(total);
+			result.setRows(flowDao.getPageByCurrentUserId(page, rows, loginUser.getId()));
+		}
+		// 审批
+		else if (method.equals("audit")) {
+			FlowDao flowDao = new FlowDao();
+			String flowId = request.getParameter("id");
+			String state = request.getParameter("state");
+			String advice = request.getParameter("advice");
+			Flow flow = flowDao.getById(flowId);
+			// 填入意见
+			if (loginUser.getRole().equals("classmaster")) {
+				flow.setClassAdvice(advice);
+			} else if (loginUser.getRole().equals("collegemaster")) {
+				flow.setCollegeAdvice(advice);
+			} else if (loginUser.getRole().equals("schoolmaster")) {
+				flow.setSchoolAdvice(advice);
+			}
+			// 失败
+			if (state.equals("fail")) {
+				flow.setCurrentUserId(flow.getStudentId());
+				flow.setCurrentNode("fail");
+			} else {
+				if (loginUser.getRole().equals("classmaster")) {
+					flow.setCurrentUserId(flow.getCollegeUserId());
+					flow.setCurrentNode("college");
+				} else if (loginUser.getRole().equals("collegemaster")) {
+					flow.setCurrentUserId(flow.getSchoolUserId());
+					flow.setCurrentNode("school");
+				} else if (loginUser.getRole().equals("schoolmaster")) {
+					flow.setCurrentUserId(flow.getStudentId());
+					flow.setCurrentNode("success");
+				}
+			}
+			flowDao.update(flow);
+			result.setCode(0);
+			result.setMsg("操作成功");
+		}
 		return result;
 	}
 }

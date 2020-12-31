@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>奖助学金审核</title>
+		<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+		<script type="text/javascript" src="easyui/jquery.min.js"></script>
+		<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
+	</head>
+
+	<body>
+		<div class="tool-box">
+			<a id="btn" onclick="btnEditClick()" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">审批</a>
+		</div>
+		<table id="mainTable" title="待审批申请列表" class="easyui-datagrid" url="CoreServlet?method=getAuditPage" pagination="true"
+		 singleSelect="true" fitColumns="true">
+			<thead>
+				<tr>
+					<th data-options="field:'id',width:50">申请序号</th>
+					<th data-options="field:'studentName',width:50">申请人</th>
+					<th data-options="field:'projectName',width:50">申请项目名称</th>
+					<th data-options="field:'content',width:100">申请说明</th>
+					<th data-options="field:'classAdvice',width:100">班主任审核意见</th>
+					<th data-options="field:'collegeAdvice',width:100">学院审核意见</th>
+					<th data-options="field:'schoolAdvice',width:100">学校审核意见</th>
+					<th data-options="field:'currentNode',width:100" formatter="formatCurrentNode">进度</th>
+				</tr>
+			</thead>
+		</table>
+		<!-- 审批弹窗 -->
+		<div id="dialog-add" class="easyui-dialog" title="审批" data-options="iconCls:'icon-ok',closed:'true'" style="width: 600px; height: 400px; padding: 10px">
+			<table>
+				<tr>
+					<td>申请编号：</td>
+					<td><input id="edit-id" class="easyui-textbox" style="width: 200px" disabled=""></td>
+				</tr>
+				<tr>
+					<td>申请说明：</td>
+					<td><input id="edit-content" class="easyui-textbox" style="width: 200px"></td>
+				</tr>
+				<tr>
+					<td>审批意见：</td>
+					<td><input id="edit-advice" class="easyui-textbox" style="width: 200px"></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<a id="btn" onclick="btnAudit('success')" href="#" class="easyui-linkbutton">通过</a>
+						<a id="btn" onclick="btnAudit('fail')" href="#" class="easyui-linkbutton">驳回</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<script>
+			// 开始审批
+			function btnEditClick() {
+				// 获取当前选中行
+				var row = $('#mainTable').datagrid('getSelected');
+				if (row == null) {
+					alert("请选择要审批的申请");
+					return;
+				}
+				// 将选中行信息设置到弹窗 
+				$("#edit-id").textbox("setValue", row.id);
+				$("#edit-content").textbox("setValue", row.content);
+				$('#dialog-edit').dialog('open');
+			}
+			// 审批
+			function btnAudit(state) {
+				var param = {
+					id: $("#edit-id").val(),
+					state: state,
+					advice: $("#edit-advice").val(),
+				}
+				$.ajax({
+					url: "CoreServlet?method=audit",
+					type: "post",
+					dataType: "json",
+					data: param,
+					success: function(res) {
+						console.log(res);
+						if (res.code == 0) { //成功则刷新表格
+							$('#mainTable').datagrid('reload');
+							$('#dialog-add').dialog('close');
+						} else { //提示错误信息
+							alert(res.msg);
+						}
+					},
+				});
+			}
+			// 格式化
+			function formatCurrentNode(val, row) {
+				if (val == "class") {
+					return "待班主任审核";
+				} else if (val == "college") {
+					return "待学院审核";
+				} else if (val == "shcool") {
+					return "待学校审核";
+				} else if (val == "success") {
+					return "通过";
+				} else if (val == "fail") {
+					return "驳回";
+				}
+				return "";
+			}
+		</script>
+
+</html>

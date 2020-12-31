@@ -127,4 +127,31 @@ public class FlowDao {
 		ConnectionUtils.releaseConnection(conn);
 		return flows;
 	}
+
+	/**
+	 * 获取数量
+	 */
+	public int getCountByCurrentUserId(String userId) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select count(id) from flow where currentUserId=?";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { userId };
+		Number number = (Number) runner.query(conn, sql, new ScalarHandler(), params);
+		int value = number.intValue();
+		ConnectionUtils.releaseConnection(conn);
+		return value;
+	}
+
+	/**
+	 * 分页查询
+	 */
+	public List<Flow> getPageByCurrentUserId(int page, int rows, String userId) throws Exception {
+		Connection conn = ConnectionUtils.getConnection();
+		String sql = "select * from flow where currentUserId=? limit ?,?";
+		QueryRunner runner = new QueryRunner();
+		Object[] params = { userId, (page - 1) * rows, rows };
+		List<Flow> flows = runner.query(conn, sql, new BeanListHandler<Flow>(Flow.class), params);
+		ConnectionUtils.releaseConnection(conn);
+		return flows;
+	}
 }
