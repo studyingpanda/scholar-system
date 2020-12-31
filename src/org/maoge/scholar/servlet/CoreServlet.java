@@ -308,7 +308,6 @@ public class CoreServlet extends HttpServlet {
 			flowDao.insert(flow);
 			result.setCode(0);
 			result.setMsg("²Ù×÷³É¹¦");
-
 		}
 		return result;
 	}
