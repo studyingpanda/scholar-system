@@ -32,15 +32,15 @@
 			</thead>
 		</table>
 		<!-- 审批弹窗 -->
-		<div id="dialog-add" class="easyui-dialog" title="审批" data-options="iconCls:'icon-ok',closed:'true'" style="width: 600px; height: 400px; padding: 10px">
+		<div id="dialog-edit" class="easyui-dialog" title="审批" data-options="iconCls:'icon-ok',closed:'true'" style="width: 600px; height: 400px; padding: 10px">
 			<table>
 				<tr>
 					<td>申请编号：</td>
-					<td><input id="edit-id" class="easyui-textbox" style="width: 200px" disabled=""></td>
+					<td><input id="edit-id" class="easyui-textbox" style="width: 200px" disabled></td>
 				</tr>
 				<tr>
 					<td>申请说明：</td>
-					<td><input id="edit-content" class="easyui-textbox" style="width: 200px"></td>
+					<td><input id="edit-content" class="easyui-textbox" style="width: 200px" disabled></td>
 				</tr>
 				<tr>
 					<td>审批意见：</td>
@@ -85,7 +85,7 @@
 						console.log(res);
 						if (res.code == 0) { //成功则刷新表格
 							$('#mainTable').datagrid('reload');
-							$('#dialog-add').dialog('close');
+							$('#dialog-edit').dialog('close');
 						} else { //提示错误信息
 							alert(res.msg);
 						}
